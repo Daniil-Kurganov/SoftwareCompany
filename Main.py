@@ -3,12 +3,23 @@ import psycopg2
 from PyQt5.QtWidgets import QMessageBox
 from WindowAuthorization import *
 
+class DBTable:
+    def __init__(self, string_name):
+        self.string_name = string_name
+        self.list_columns_names = []
+        with connection.cursor() as cursor:
+            string_sql_reqest = 'SELECT column_name FROM information_schema.columns WHERE table_name = %s ORDER BY ordinal_position;'
+            cursor.execute(string_sql_reqest, (self.string_name,))
+            list_authorization_result = cursor.fetchall()
+        for tuple_current_column_name in list_authorization_result:
+            self.list_columns_names.append(tuple_current_column_name[0])
+        print(self.list_columns_names)
 def authorization() -> None:
     '''Процесс авторизации'''
     global sting_password, string_privilege
     with connection.cursor() as cursor:
-        string_request = "SELECT * FROM accounts WHERE login = %s AND passwd = %s"
-        cursor.execute(string_request, (str(ui.TextEditLoginInput.toPlainText()), str(ui.TextEditPasswordInput.toPlainText())))
+        string_sql_request = "SELECT * FROM accounts WHERE login = %s AND passwd = %s"
+        cursor.execute(string_sql_request, (str(ui.TextEditLoginInput.toPlainText()), str(ui.TextEditPasswordInput.toPlainText())))
         tuple_authorization_result = cursor.fetchone()
         if tuple_authorization_result != None: sting_password, string_privilege = tuple_authorization_result[2], tuple_authorization_result[3]
         else: show_error_message(13, 'Пользователь с такими данными не существует.')
@@ -31,6 +42,14 @@ ui.setupUi(WindowAuthorization)
 WindowAuthorization.show()
 try:
     connection = psycopg2.connect(host = 'localhost', user = 'postgres', password = '123456789', dbname = 'SoftwareCompanyDB', port = 5432)
+    dbtable_employees = DBTable("employees")
+    dbtable_accounts = DBTable('accounts')
+    dbtable_customers = DBTable("customers")
+    dbtable_projects = DBTable('projects')
+    dbtable_technicaltasks = DBTable('technicaltasks')
+    dbtable_projectteams = DBTable('projectteams')
+    dbtable_agreements= DBTable('agreements')
+    dbtable_services = DBTable('services')
     ui.PushButtonAuthorization.clicked.connect(authorization)
 except Exception as string_error: show_error_message(6, string_error)
 sys.exit(app.exec_())
