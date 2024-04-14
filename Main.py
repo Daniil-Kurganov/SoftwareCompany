@@ -1,7 +1,9 @@
 import sys
 import psycopg2
 from PyQt5.QtWidgets import QMessageBox
-from WindowAuthorization import *
+from PyQt5.QtWidgets import QTableWidgetItem
+from GUI_PY.WindowAuthorization import *
+from GUI_PY.WindowWorkWithDBTables import *
 
 class DBTable:
     def __init__(self, string_name):
@@ -12,8 +14,7 @@ class DBTable:
             cursor.execute(string_sql_reqest, (self.string_name,))
             list_authorization_result = cursor.fetchall()
         for tuple_current_column_name in list_authorization_result:
-            self.list_columns_names.append(tuple_current_column_name[0])
-        print(self.list_columns_names)
+            self.list_columns_names.append(str(tuple_current_column_name[0]))
 def authorization() -> None:
     '''Процесс авторизации'''
     global sting_password, string_privilege
@@ -21,7 +22,9 @@ def authorization() -> None:
         string_sql_request = "SELECT * FROM accounts WHERE login = %s AND passwd = %s"
         cursor.execute(string_sql_request, (str(ui.TextEditLoginInput.toPlainText()), str(ui.TextEditPasswordInput.toPlainText())))
         tuple_authorization_result = cursor.fetchone()
-        if tuple_authorization_result != None: sting_password, string_privilege = tuple_authorization_result[2], tuple_authorization_result[3]
+        if tuple_authorization_result != None:
+            sting_password, string_privilege = tuple_authorization_result[2], tuple_authorization_result[3]
+            WindowWorkWithDBTables()
         else: show_error_message(13, 'Пользователь с такими данными не существует.')
         return None
 def show_error_message(int_error_key: int, string_error_massage: str) -> None:
@@ -34,6 +37,33 @@ def show_error_message(int_error_key: int, string_error_massage: str) -> None:
     message_error.setWindowTitle("Ошибка!")
     message_error.exec_()
     return None
+def WindowWorkWithDBTables() -> None:
+    '''Функция окна работы с табоицами БД'''
+    global WindowWorkWithDBTables
+
+    def show_dbtable() -> None:
+        '''Вывод данных таблицы БД'''
+        int_current_dbtables_index = ui.ComboBoxCurrentDBTable.currentIndex()
+        with connection.cursor() as cursor:
+            string_request = "SELECT * FROM {};".format(list_dbtables[int_current_dbtables_index].string_name)
+            cursor.execute(string_request)
+            list_current_dbtable_data = cursor.fetchall()
+        ui.TableWidgetDBTableData.setRowCount(len(list_current_dbtable_data))
+        ui.TableWidgetDBTableData.setColumnCount(len(list_current_dbtable_data[0]))
+        ui.TableWidgetDBTableData.verticalHeader().setVisible(False)
+        ui.TableWidgetDBTableData.setVerticalHeaderItem(0, QTableWidgetItem(list_dbtables[int_current_dbtables_index].list_columns_names[0]))
+        # ui.TableWidgetDBTableData.setVerticalHeaderLabels(list_dbtables[int_current_dbtables_index].list_columns_names)
+        for int_current_row_index in range(len(list_current_dbtable_data)):
+            for int_current_column_index in range(len(list_current_dbtable_data[int_current_row_index])):
+                ui.TableWidgetDBTableData.setItem(int_current_row_index, int_current_column_index, QTableWidgetItem(
+                                                        str(list_current_dbtable_data[int_current_row_index][int_current_column_index])))
+
+    WindowWorkWithDBTables = QtWidgets.QMainWindow()
+    ui = Ui_WindowWorkWithDBTables()
+    ui.setupUi(WindowWorkWithDBTables)
+    WindowAuthorization.close()
+    WindowWorkWithDBTables.show()
+    ui.ComboBoxCurrentDBTable.currentIndexChanged.connect(show_dbtable)
 
 app = QtWidgets.QApplication(sys.argv)
 WindowAuthorization = QtWidgets.QMainWindow()
@@ -42,14 +72,13 @@ ui.setupUi(WindowAuthorization)
 WindowAuthorization.show()
 try:
     connection = psycopg2.connect(host = 'localhost', user = 'postgres', password = '123456789', dbname = 'SoftwareCompanyDB', port = 5432)
-    dbtable_employees = DBTable("employees")
-    dbtable_accounts = DBTable('accounts')
-    dbtable_customers = DBTable("customers")
-    dbtable_projects = DBTable('projects')
-    dbtable_technicaltasks = DBTable('technicaltasks')
-    dbtable_projectteams = DBTable('projectteams')
-    dbtable_agreements= DBTable('agreements')
-    dbtable_services = DBTable('services')
+    list_dbtables = []
+    with connection.cursor() as cursor:
+        string_request = "SELECT table_name FROM information_schema.tables WHERE table_schema NOT IN ('information_schema', 'pg_catalog') AND table_schema IN('public', 'myschema');"
+        cursor.execute(string_request)
+        list_sql_result = cursor.fetchall()
+    for tuple_current_table_name in list_sql_result:
+        list_dbtables.append(DBTable(tuple_current_table_name[0]))
     ui.PushButtonAuthorization.clicked.connect(authorization)
 except Exception as string_error: show_error_message(6, string_error)
 sys.exit(app.exec_())

@@ -1,0 +1,44 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Ui_WindowWorkWithDBTables(object):
+    def setupUi(self, WindowWorkWithDBTables):
+        WindowWorkWithDBTables.setObjectName("WindowWorkWithDBTables")
+        WindowWorkWithDBTables.resize(779, 384)
+        self.centralwidget = QtWidgets.QWidget(WindowWorkWithDBTables)
+        self.centralwidget.setObjectName("centralwidget")
+        self.ComboBoxCurrentDBTable = QtWidgets.QComboBox(self.centralwidget)
+        self.ComboBoxCurrentDBTable.setGeometry(QtCore.QRect(10, 20, 191, 22))
+        self.ComboBoxCurrentDBTable.setEditable(False)
+        self.ComboBoxCurrentDBTable.setCurrentText("Проекты")
+        self.ComboBoxCurrentDBTable.setObjectName("ComboBoxCurrentDBTable")
+        self.ComboBoxCurrentDBTable.addItem("")
+        self.ComboBoxCurrentDBTable.addItem("")
+        self.ComboBoxCurrentDBTable.addItem("")
+        self.ComboBoxCurrentDBTable.addItem("")
+        self.ComboBoxCurrentDBTable.addItem("")
+        self.ComboBoxCurrentDBTable.addItem("")
+        self.ComboBoxCurrentDBTable.addItem("")
+        self.ComboBoxCurrentDBTable.addItem("")
+        self.TableWidgetDBTableData = QtWidgets.QTableWidget(self.centralwidget)
+        self.TableWidgetDBTableData.setGeometry(QtCore.QRect(30, 70, 701, 231))
+        self.TableWidgetDBTableData.setObjectName("TableWidgetDBTableData")
+        self.TableWidgetDBTableData.setColumnCount(0)
+        self.TableWidgetDBTableData.setRowCount(0)
+        WindowWorkWithDBTables.setCentralWidget(self.centralwidget)
+        self.statusbar = QtWidgets.QStatusBar(WindowWorkWithDBTables)
+        self.statusbar.setObjectName("statusbar")
+        WindowWorkWithDBTables.setStatusBar(self.statusbar)
+
+        self.retranslateUi(WindowWorkWithDBTables)
+        QtCore.QMetaObject.connectSlotsByName(WindowWorkWithDBTables)
+
+    def retranslateUi(self, WindowWorkWithDBTables):
+        _translate = QtCore.QCoreApplication.translate
+        WindowWorkWithDBTables.setWindowTitle(_translate("WindowWorkWithDBTables", "SC: Window work with tables"))
+        self.ComboBoxCurrentDBTable.setItemText(0, _translate("WindowWorkWithDBTables", "Проекты"))
+        self.ComboBoxCurrentDBTable.setItemText(1, _translate("WindowWorkWithDBTables", "Договоры"))
+        self.ComboBoxCurrentDBTable.setItemText(2, _translate("WindowWorkWithDBTables", "Технические задания"))
+        self.ComboBoxCurrentDBTable.setItemText(3, _translate("WindowWorkWithDBTables", "Заказчики"))
+        self.ComboBoxCurrentDBTable.setItemText(4, _translate("WindowWorkWithDBTables", "Услуги"))
+        self.ComboBoxCurrentDBTable.setItemText(5, _translate("WindowWorkWithDBTables", "Сотрудники"))
+        self.ComboBoxCurrentDBTable.setItemText(6, _translate("WindowWorkWithDBTables", "Проектные команды"))
