@@ -1,12 +1,12 @@
 import sys
 import psycopg2
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox
 from GUI_PY.WindowAuthorization import *
 from GUI_PY.WindowWorkWithDBTables import *
 
 class DBTable:
-    def __init__(self, string_name):
+    def __init__(self, string_name) -> None:
         self.string_name = string_name
         self.list_columns_names = []
         with connection.cursor() as cursor:
@@ -15,6 +15,7 @@ class DBTable:
             list_authorization_result = cursor.fetchall()
         for tuple_current_column_name in list_authorization_result:
             self.list_columns_names.append(str(tuple_current_column_name[0]))
+        return None
 def authorization() -> None:
     '''Процесс авторизации'''
     global sting_password, string_privilege
@@ -26,7 +27,7 @@ def authorization() -> None:
             ui.TextEditLoginInput.clear()
             ui.TextEditPasswordInput.clear()
             sting_password, string_privilege = tuple_authorization_result[2], tuple_authorization_result[3]
-            WindowWorkWithDBTables()
+            WorkWithDBTables()
         else: show_error_message(13, 'Пользователь с такими данными не существует.')
         return None
 def show_error_message(int_error_key: int, string_error_massage: str) -> None:
@@ -39,7 +40,7 @@ def show_error_message(int_error_key: int, string_error_massage: str) -> None:
     message_error.setWindowTitle("Ошибка!")
     message_error.exec_()
     return None
-def WindowWorkWithDBTables() -> None:
+def WorkWithDBTables() -> None:
     '''Функция окна работы с табоицами БД'''
     global WindowWorkWithDBTables
 
@@ -58,24 +59,68 @@ def WindowWorkWithDBTables() -> None:
             for int_current_column_index in range(len(list_current_dbtable_data[int_current_row_index])):
                 ui.TableWidgetDBTableData.setItem(int_current_row_index, int_current_column_index, QTableWidgetItem(
                                                         str(list_current_dbtable_data[int_current_row_index][int_current_column_index])))
+        ui.ComboBoxIdMutableNote.clear()
+        for tuple_current_note in list_current_dbtable_data:
+            ui.ComboBoxIdMutableNote.addItem(str(tuple_current_note[0]))
+        return None
     def logout() -> None:
         '''Выход из учётной записи'''
         sting_password, string_privilege = '', ''
         WindowWorkWithDBTables.hide()
         WindowAuthorization.show()
+        return None
+    def set_admin_state() -> None:
+        '''Установка настроек окна для аккаунта admin'''
+        ui.RadioButtonInsertNote.setEnabled(True)
+        ui.RadioButtonEditNote.setEnabled(True)
+        ui.RadioButtonDeleteNote.setEnabled(True)
+        return None
+    def insert_mode_activate() -> None:
+        '''Вектор внеснения новой записи в таблицу БД'''
+        global string_operation_type
+        string_operation_type = 'insert'
+        ui.TextEditWorkspace.setEnabled(True)
+        ui.PushButtonDoExtion.setEnabled(True)
+        ui.PushButtonInsertSeparator.setEnabled(True)
+        return None
+    def edit_mode_activate() -> None:
+        '''Вектор изменения текущих записей в таблице БД'''
+        global string_operation_type
+        string_operation_type = 'edit'
+        ui.TextEditWorkspace.setEnabled(True)
+        ui.PushButtonDoExtion.setEnabled(True)
+        ui.ComboBoxIdMutableNote.setEnabled(True)
+        ui.PushButtonInsertSeparator.setEnabled(True)
+        with connection.cursor() as cursor:
+            string_sql_request = "SELECT * FROM {} WHERE id = %s;".format(list_dbtables[ui.ComboBoxCurrentDBTable.currentIndex()].string_name)
+            cursor.execute(string_sql_request, (str(ui.ComboBoxIdMutableNote.currentText()),))
+            tuple_sql_request_result = cursor.fetchone()
+        ui.TextEditWorkspace.setText('$_%_$'.join(tuple_sql_request_result))
+        return None
+    def do_extion_with_dbtable() -> None:
+        '''Выполнить выбранную операцию с таблицей БД'''
+        return None
+    def insert_separator_to_workspace() -> None:
+        '''Подстановка сепаратора в рабочую облать'''
+        cursor =  ui.TextEditWorkspace.textCursor()
+        cursor.movePosition(QtGui.QTextCursor.End)
+        cursor.insertText('$_%_$')
+        ui.TextEditWorkspace.setTextCursor(cursor)
+        return None
 
     WindowWorkWithDBTables = QtWidgets.QMainWindow()
     ui = Ui_WindowWorkWithDBTables()
     ui.setupUi(WindowWorkWithDBTables)
     WindowAuthorization.close()
     WindowWorkWithDBTables.show()
-    if string_privilege == 'Администратор':
-        ui.RadioButtonInsertNote.setEnabled(True)
-        ui.RadioButtonEditNote.setEnabled(True)
-        ui.RadioButtonDeleteNote.setEnabled(True)
+    if string_privilege == 'Администратор': set_admin_state()
     elif string_privilege == 'Привилегированный пользователь': ui.RadioButtonInsertNote.setEnabled(True)
     ui.ComboBoxCurrentDBTable.currentIndexChanged.connect(show_dbtable)
     ui.PushButtonLogOut.clicked.connect(logout)
+    ui.RadioButtonInsertNote.clicked.connect(insert_mode_activate)
+    ui.RadioButtonEditNote.clicked.connect(edit_mode_activate)
+    ui.PushButtonInsertSeparator.clicked.connect(insert_separator_to_workspace)
+    return None
 
 app = QtWidgets.QApplication(sys.argv)
 WindowAuthorization = QtWidgets.QMainWindow()

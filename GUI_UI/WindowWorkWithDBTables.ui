@@ -129,7 +129,7 @@
     <property name="geometry">
      <rect>
       <x>630</x>
-      <y>90</y>
+      <y>50</y>
       <width>101</width>
       <height>17</height>
      </rect>
@@ -145,7 +145,7 @@
     <property name="geometry">
      <rect>
       <x>630</x>
-      <y>150</y>
+      <y>110</y>
       <width>111</width>
       <height>17</height>
      </rect>
@@ -161,7 +161,7 @@
     <property name="geometry">
      <rect>
       <x>630</x>
-      <y>220</y>
+      <y>180</y>
       <width>101</width>
       <height>17</height>
      </rect>
@@ -174,7 +174,7 @@
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>50</y>
+      <y>10</y>
       <width>151</width>
       <height>16</height>
      </rect>
@@ -188,7 +188,7 @@
      <string>Выберите тип опирации:</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QTextEdit" name="TextEditWorkspace">
     <property name="enabled">
      <bool>false</bool>
     </property>
@@ -199,6 +199,19 @@
       <width>761</width>
       <height>31</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PushButtonInsertSeparator">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>230</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>$_%_$</string>
     </property>
    </widget>
   </widget>
