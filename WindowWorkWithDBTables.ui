@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WindowWorkWithDBTables</class>
+ <widget class="QMainWindow" name="WindowWorkWithDBTables">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>779</width>
+    <height>384</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>SC: Window work with tables</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QComboBox" name="ComboBoxCurrentDBTable">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>191</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="editable">
+     <bool>false</bool>
+    </property>
+    <property name="currentText">
+     <string notr="true">Проекты</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>Проекты</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Договоры</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Технические задания</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Заказчики</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Услуги</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Сотрудники</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Проектные команды</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Аккаунты</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QTableWidget" name="TableWidgetDBTableData">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>70</y>
+      <width>701</width>
+      <height>231</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

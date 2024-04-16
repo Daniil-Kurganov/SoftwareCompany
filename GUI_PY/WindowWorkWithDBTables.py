@@ -42,3 +42,4 @@ class Ui_WindowWorkWithDBTables(object):
         self.ComboBoxCurrentDBTable.setItemText(4, _translate("WindowWorkWithDBTables", "Услуги"))
         self.ComboBoxCurrentDBTable.setItemText(5, _translate("WindowWorkWithDBTables", "Сотрудники"))
         self.ComboBoxCurrentDBTable.setItemText(6, _translate("WindowWorkWithDBTables", "Проектные команды"))
+        self.ComboBoxCurrentDBTable.setItemText(7, _translate("WindowWorkWithDBTables", "Аккаунты"))

@@ -51,8 +51,7 @@ def WindowWorkWithDBTables() -> None:
         ui.TableWidgetDBTableData.setRowCount(len(list_current_dbtable_data))
         ui.TableWidgetDBTableData.setColumnCount(len(list_current_dbtable_data[0]))
         ui.TableWidgetDBTableData.verticalHeader().setVisible(False)
-        ui.TableWidgetDBTableData.setVerticalHeaderItem(0, QTableWidgetItem(list_dbtables[int_current_dbtables_index].list_columns_names[0]))
-        # ui.TableWidgetDBTableData.setVerticalHeaderLabels(list_dbtables[int_current_dbtables_index].list_columns_names)
+        ui.TableWidgetDBTableData.setHorizontalHeaderLabels(list_dbtables[int_current_dbtables_index].list_columns_names)
         for int_current_row_index in range(len(list_current_dbtable_data)):
             for int_current_column_index in range(len(list_current_dbtable_data[int_current_row_index])):
                 ui.TableWidgetDBTableData.setItem(int_current_row_index, int_current_column_index, QTableWidgetItem(
@@ -73,12 +72,14 @@ WindowAuthorization.show()
 try:
     connection = psycopg2.connect(host = 'localhost', user = 'postgres', password = '123456789', dbname = 'SoftwareCompanyDB', port = 5432)
     list_dbtables = []
-    with connection.cursor() as cursor:
-        string_request = "SELECT table_name FROM information_schema.tables WHERE table_schema NOT IN ('information_schema', 'pg_catalog') AND table_schema IN('public', 'myschema');"
-        cursor.execute(string_request)
-        list_sql_result = cursor.fetchall()
-    for tuple_current_table_name in list_sql_result:
-        list_dbtables.append(DBTable(tuple_current_table_name[0]))
+    list_dbtables.append(DBTable('projects'))
+    list_dbtables.append(DBTable('agreements'))
+    list_dbtables.append(DBTable('technicaltasks'))
+    list_dbtables.append(DBTable('customers'))
+    list_dbtables.append(DBTable('services'))
+    list_dbtables.append(DBTable('employees'))
+    list_dbtables.append(DBTable('projectteams'))
+    list_dbtables.append(DBTable('accounts'))
     ui.PushButtonAuthorization.clicked.connect(authorization)
 except Exception as string_error: show_error_message(6, string_error)
 sys.exit(app.exec_())

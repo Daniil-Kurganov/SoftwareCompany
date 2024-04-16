@@ -10,3 +10,12 @@ try:
 except Exception as error: print('Возникла ошикбка по подключению к БД:\n', error)
 finally:
     if connection: connection.close()
+
+
+
+# with connection.cursor() as cursor:
+#     string_request = "SELECT table_name FROM information_schema.tables WHERE table_schema NOT IN ('information_schema', 'pg_catalog') AND table_schema IN('public', 'myschema');"
+#     cursor.execute(string_request)
+#     list_sql_result = cursor.fetchall()
+# for tuple_current_table_name in list_sql_result:
+#     list_dbtables.append(DBTable(tuple_current_table_name[0]))
