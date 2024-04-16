@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>779</width>
-    <height>384</height>
+    <width>778</width>
+    <height>336</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QComboBox" name="ComboBoxCurrentDBTable">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>20</y>
+      <x>100</x>
+      <y>10</y>
       <width>191</width>
       <height>22</height>
      </rect>
@@ -70,13 +70,134 @@
      </property>
     </item>
    </widget>
-   <widget class="QTableWidget" name="tableWidget">
+   <widget class="QTableWidget" name="TableWidgetDBTableData">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>70</y>
-      <width>701</width>
+      <x>10</x>
+      <y>40</y>
+      <width>591</width>
       <height>231</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PushButtonLogOut">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>LogOut</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="ComboBoxIdMutableNote">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>10</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PushButtonDoExtion">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>10</y>
+      <width>191</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Выполнить действие</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="RadioButtonInsertNote">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>90</y>
+      <width>101</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Новая запись</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="RadioButtonEditNote">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>150</y>
+      <width>111</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Изменить запись</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="RadioButtonDeleteNote">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>220</y>
+      <width>101</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Удалить запись</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="LabelTitleOperations">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>50</y>
+      <width>151</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Выберите тип опирации:</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>280</y>
+      <width>761</width>
+      <height>31</height>
      </rect>
     </property>
    </widget>

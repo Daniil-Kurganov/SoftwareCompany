@@ -23,6 +23,8 @@ def authorization() -> None:
         cursor.execute(string_sql_request, (str(ui.TextEditLoginInput.toPlainText()), str(ui.TextEditPasswordInput.toPlainText())))
         tuple_authorization_result = cursor.fetchone()
         if tuple_authorization_result != None:
+            ui.TextEditLoginInput.clear()
+            ui.TextEditPasswordInput.clear()
             sting_password, string_privilege = tuple_authorization_result[2], tuple_authorization_result[3]
             WindowWorkWithDBTables()
         else: show_error_message(13, 'Пользователь с такими данными не существует.')
@@ -56,13 +58,24 @@ def WindowWorkWithDBTables() -> None:
             for int_current_column_index in range(len(list_current_dbtable_data[int_current_row_index])):
                 ui.TableWidgetDBTableData.setItem(int_current_row_index, int_current_column_index, QTableWidgetItem(
                                                         str(list_current_dbtable_data[int_current_row_index][int_current_column_index])))
+    def logout() -> None:
+        '''Выход из учётной записи'''
+        sting_password, string_privilege = '', ''
+        WindowWorkWithDBTables.hide()
+        WindowAuthorization.show()
 
     WindowWorkWithDBTables = QtWidgets.QMainWindow()
     ui = Ui_WindowWorkWithDBTables()
     ui.setupUi(WindowWorkWithDBTables)
     WindowAuthorization.close()
     WindowWorkWithDBTables.show()
+    if string_privilege == 'Администратор':
+        ui.RadioButtonInsertNote.setEnabled(True)
+        ui.RadioButtonEditNote.setEnabled(True)
+        ui.RadioButtonDeleteNote.setEnabled(True)
+    elif string_privilege == 'Привилегированный пользователь': ui.RadioButtonInsertNote.setEnabled(True)
     ui.ComboBoxCurrentDBTable.currentIndexChanged.connect(show_dbtable)
+    ui.PushButtonLogOut.clicked.connect(logout)
 
 app = QtWidgets.QApplication(sys.argv)
 WindowAuthorization = QtWidgets.QMainWindow()
