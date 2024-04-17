@@ -9,7 +9,8 @@ class DBTable:
     def __init__(self, string_name) -> None:
         self.string_name = string_name
         self.list_columns_names, self.list_columns_data_types = [], []
-        self.dictionary_query = {'insert': 'INSERT INTO {}('.format(self.string_name)}
+        self.dictionary_query = {'insert': 'INSERT INTO {}('.format(self.string_name),
+                                 'delete': 'DELETE FROM {} WHERE id = %s;'.format(self.string_name)}
         connection = get_db_connection()
         with connection.cursor() as cursor:
             string_sql_reqest = 'SELECT column_name, data_type FROM information_schema.columns WHERE table_name = %s ORDER BY ordinal_position;'
@@ -78,7 +79,6 @@ def WorkWithDBTables() -> None:
         return None
     def logout() -> None:
         '''Выход из учётной записи'''
-        sting_password, string_privilege = '', ''
         WindowWorkWithDBTables.hide()
         WindowAuthorization.show()
         return None
@@ -91,17 +91,13 @@ def WorkWithDBTables() -> None:
         return None
     def insert_mode_activate() -> None:
         '''Вектор внеснения новой записи в таблицу БД'''
-        global string_operation_type
-        string_operation_type = 'insert'
         ui.TextEditWorkspace.setEnabled(True)
         ui.PushButtonDoExtion.setEnabled(True)
         ui.PushButtonInsertSeparator.setEnabled(True)
         ui.TextEditWorkspace.clear()
         return None
-    def edit_mode_activate() -> None:
+    def edit_or_delete_mode_activate() -> None:
         '''Вектор изменения текущих записей в таблице БД'''
-        global string_operation_type
-        string_operation_type = 'edit'
         ui.TextEditWorkspace.setEnabled(True)
         ui.PushButtonDoExtion.setEnabled(True)
         ui.ComboBoxIdMutableNote.setEnabled(True)
@@ -116,7 +112,6 @@ def WorkWithDBTables() -> None:
         return None
     def do_extion_with_dbtable() -> None:
         '''Выполнить выбранную операцию с таблицей БД'''
-        global string_operation_type
         try:
             dbtable = list_dbtables[ui.ComboBoxCurrentDBTable.currentIndex()]
             list_current_data = ui.TextEditWorkspace.toPlainText().split('$_%_$')
@@ -124,12 +119,13 @@ def WorkWithDBTables() -> None:
             for type_current_data in dbtable.list_columns_data_types:
                 list_current_data[int_current_iteration] = type_current_data(list_current_data[int_current_iteration])
                 int_current_iteration += 1
-            if string_operation_type == 'insert':
-                connection = get_db_connection()
-                with connection.cursor() as cursor:
-                    cursor.execute(dbtable.dictionary_query['insert'], list_current_data)
-                    connection.commit()
-                connection.close()
+            connection = get_db_connection()
+            if ui.RadioButtonInsertNote.isChecked():
+                with connection.cursor() as cursor: cursor.execute(dbtable.dictionary_query['insert'], list_current_data)
+            elif ui.RadioButtonDeleteNote.isChecked():
+                with connection.cursor() as cursor: cursor.execute(dbtable.dictionary_query['delete'], (int(ui.ComboBoxIdMutableNote.currentText()),))
+            connection.commit()
+            connection.close()
             ui.TextEditWorkspace.clear()
         except Exception as string_error: show_error_message(451, str(string_error))
         return None
@@ -151,7 +147,8 @@ def WorkWithDBTables() -> None:
     ui.ComboBoxCurrentDBTable.currentIndexChanged.connect(show_dbtable)
     ui.PushButtonLogOut.clicked.connect(logout)
     ui.RadioButtonInsertNote.clicked.connect(insert_mode_activate)
-    ui.RadioButtonEditNote.clicked.connect(edit_mode_activate)
+    ui.RadioButtonEditNote.clicked.connect(edit_or_delete_mode_activate)
+    ui.RadioButtonDeleteNote.clicked.connect(edit_or_delete_mode_activate)
     ui.PushButtonInsertSeparator.clicked.connect(insert_separator_to_workspace)
     ui.PushButtonDoExtion.clicked.connect(do_extion_with_dbtable)
     return None
