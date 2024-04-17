@@ -8,17 +8,27 @@ from GUI_PY.WindowWorkWithDBTables import *
 class DBTable:
     def __init__(self, string_name) -> None:
         self.string_name = string_name
-        self.list_columns_names = []
+        self.list_columns_names, self.list_columns_data_types = [], []
+        self.dictionary_query = {'insert': 'INSERT INTO {}('.format(self.string_name)}
+        connection = get_db_connection()
         with connection.cursor() as cursor:
-            string_sql_reqest = 'SELECT column_name FROM information_schema.columns WHERE table_name = %s ORDER BY ordinal_position;'
+            string_sql_reqest = 'SELECT column_name, data_type FROM information_schema.columns WHERE table_name = %s ORDER BY ordinal_position;'
             cursor.execute(string_sql_reqest, (self.string_name,))
             list_authorization_result = cursor.fetchall()
-        for tuple_current_column_name in list_authorization_result:
-            self.list_columns_names.append(str(tuple_current_column_name[0]))
+        connection.close()
+        string_insert_query = ''
+        for tuple_current_column in list_authorization_result:
+            self.list_columns_names.append(str(tuple_current_column[0]))
+            string_insert_query += tuple_current_column[0] + ', '
+            if tuple_current_column[1] == 'bigint': self.list_columns_data_types.append(int)
+            else: self.list_columns_data_types.append(str)
+        string_insert_query = string_insert_query[:-2] + ') VALUES (' + ('%s, ' * len(self.list_columns_names))
+        self.dictionary_query['insert'] += string_insert_query[:-2] + ');'
         return None
 def authorization() -> None:
     '''Процесс авторизации'''
     global sting_password, string_privilege
+    connection = get_db_connection()
     with connection.cursor() as cursor:
         string_sql_request = "SELECT * FROM accounts WHERE login = %s AND passwd = %s"
         cursor.execute(string_sql_request, (str(ui.TextEditLoginInput.toPlainText()), str(ui.TextEditPasswordInput.toPlainText())))
@@ -29,10 +39,11 @@ def authorization() -> None:
             sting_password, string_privilege = tuple_authorization_result[2], tuple_authorization_result[3]
             WorkWithDBTables()
         else: show_error_message(13, 'Пользователь с такими данными не существует.')
-        return None
+    connection.close()
+    return None
 def show_error_message(int_error_key: int, string_error_massage: str) -> None:
     '''Вывод ошибок'''
-    dictionary_error_texts = {6: 'Ошибка подключения к БД', 13: 'Ошибка авторизации'}
+    dictionary_error_texts = {6: 'Ошибка подключения к БД', 13: 'Ошибка авторизации', 451: 'Ошибка работы с БД'}
     message_error = QMessageBox()
     message_error.setIcon(QMessageBox.Critical)
     message_error.setText(dictionary_error_texts[int_error_key])
@@ -47,10 +58,12 @@ def WorkWithDBTables() -> None:
     def show_dbtable() -> None:
         '''Вывод данных таблицы БД'''
         int_current_dbtables_index = ui.ComboBoxCurrentDBTable.currentIndex()
+        connection = get_db_connection()
         with connection.cursor() as cursor:
             string_request = "SELECT * FROM {};".format(list_dbtables[int_current_dbtables_index].string_name)
             cursor.execute(string_request)
             list_current_dbtable_data = cursor.fetchall()
+        connection.close()
         ui.TableWidgetDBTableData.setRowCount(len(list_current_dbtable_data))
         ui.TableWidgetDBTableData.setColumnCount(len(list_current_dbtable_data[0]))
         ui.TableWidgetDBTableData.verticalHeader().setVisible(False)
@@ -83,6 +96,7 @@ def WorkWithDBTables() -> None:
         ui.TextEditWorkspace.setEnabled(True)
         ui.PushButtonDoExtion.setEnabled(True)
         ui.PushButtonInsertSeparator.setEnabled(True)
+        ui.TextEditWorkspace.clear()
         return None
     def edit_mode_activate() -> None:
         '''Вектор изменения текущих записей в таблице БД'''
@@ -92,14 +106,32 @@ def WorkWithDBTables() -> None:
         ui.PushButtonDoExtion.setEnabled(True)
         ui.ComboBoxIdMutableNote.setEnabled(True)
         ui.PushButtonInsertSeparator.setEnabled(True)
+        connection = get_db_connection()
         with connection.cursor() as cursor:
             string_sql_request = "SELECT * FROM {} WHERE id = %s;".format(list_dbtables[ui.ComboBoxCurrentDBTable.currentIndex()].string_name)
             cursor.execute(string_sql_request, (str(ui.ComboBoxIdMutableNote.currentText()),))
             tuple_sql_request_result = cursor.fetchone()
+        connection.close()
         ui.TextEditWorkspace.setText('$_%_$'.join(str(item_current) for item_current in tuple_sql_request_result))
         return None
     def do_extion_with_dbtable() -> None:
         '''Выполнить выбранную операцию с таблицей БД'''
+        global string_operation_type
+        try:
+            dbtable = list_dbtables[ui.ComboBoxCurrentDBTable.currentIndex()]
+            list_current_data = ui.TextEditWorkspace.toPlainText().split('$_%_$')
+            int_current_iteration = 0
+            for type_current_data in dbtable.list_columns_data_types:
+                list_current_data[int_current_iteration] = type_current_data(list_current_data[int_current_iteration])
+                int_current_iteration += 1
+            if string_operation_type == 'insert':
+                connection = get_db_connection()
+                with connection.cursor() as cursor:
+                    cursor.execute(dbtable.dictionary_query['insert'], list_current_data)
+                    connection.commit()
+                connection.close()
+            ui.TextEditWorkspace.clear()
+        except Exception as string_error: show_error_message(451, str(string_error))
         return None
     def insert_separator_to_workspace() -> None:
         '''Подстановка сепаратора в рабочую облать'''
@@ -121,25 +153,30 @@ def WorkWithDBTables() -> None:
     ui.RadioButtonInsertNote.clicked.connect(insert_mode_activate)
     ui.RadioButtonEditNote.clicked.connect(edit_mode_activate)
     ui.PushButtonInsertSeparator.clicked.connect(insert_separator_to_workspace)
+    ui.PushButtonDoExtion.clicked.connect(do_extion_with_dbtable)
     return None
+def get_db_connection() -> psycopg2:
+    '''Подключение к БД'''
+    try:
+        connection = psycopg2.connect(host='localhost', user='postgres', password='123456789', dbname='SoftwareCompanyDB', port=5432)
+        return connection
+    except Exception as string_error:
+        show_error_message(6, string_error)
+        exit(666)
 
 app = QtWidgets.QApplication(sys.argv)
 WindowAuthorization = QtWidgets.QMainWindow()
 ui = Ui_WindowAuthorization()
 ui.setupUi(WindowAuthorization)
 WindowAuthorization.show()
-try:
-    connection = psycopg2.connect(host = 'localhost', user = 'postgres', password = '123456789', dbname = 'SoftwareCompanyDB', port = 5432)
-    list_dbtables = []
-    list_dbtables.append(DBTable('projects'))
-    list_dbtables.append(DBTable('agreements'))
-    list_dbtables.append(DBTable('technicaltasks'))
-    list_dbtables.append(DBTable('customers'))
-    list_dbtables.append(DBTable('services'))
-    list_dbtables.append(DBTable('employees'))
-    list_dbtables.append(DBTable('projectteams'))
-    list_dbtables.append(DBTable('accounts'))
-    ui.PushButtonAuthorization.clicked.connect(authorization)
-except Exception as string_error: show_error_message(6, string_error)
+list_dbtables = []
+list_dbtables.append(DBTable('projects'))
+list_dbtables.append(DBTable('agreements'))
+list_dbtables.append(DBTable('technicaltasks'))
+list_dbtables.append(DBTable('customers'))
+list_dbtables.append(DBTable('services'))
+list_dbtables.append(DBTable('employees'))
+list_dbtables.append(DBTable('projectteams'))
+list_dbtables.append(DBTable('accounts'))
+ui.PushButtonAuthorization.clicked.connect(authorization)
 sys.exit(app.exec_())
-if connection: connection.close()

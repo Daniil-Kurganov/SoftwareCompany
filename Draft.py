@@ -5,8 +5,12 @@ try:
     with connection.cursor() as cursor:
         string_request = "INSERT INTO {}({}, {}, {}, {}, {}) VALUES (%s, %s, %s, %s, %s);".format('accounts', 'id', 'login', 'passwd',
                                                                                                   'privilege', 'idowner')
-        cursor.execute(string_request, (5, ))
-        print('{}'.format(cursor.fetchall()))
+        cursor.execute(string_request, (7, 'lof', 'f,d', 'Пользователь', 2))
+        # # print('{}'.format(cursor.fetchall()))
+        # string_sql_reqest = 'SELECT column_name, data_type FROM information_schema.columns WHERE table_name = %s ORDER BY ordinal_position;'
+        # cursor.execute(string_sql_reqest, ('accounts',))
+        # list_authorization_result = cursor.fetchall()
+        # print(list_authorization_result)
 except Exception as error: print('Возникла ошикбка по подключению к БД:\n', error)
 finally:
     if connection: connection.close()
