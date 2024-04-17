@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WindowWorkWithDBTables</class>
+ <widget class="QMainWindow" name="WindowWorkWithDBTables">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>778</width>
+    <height>336</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>SC: Window work with tables</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QComboBox" name="ComboBoxCurrentDBTable">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>10</y>
+      <width>191</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="editable">
+     <bool>false</bool>
+    </property>
+    <property name="currentText">
+     <string notr="true">Проекты</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>Проекты</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Договоры</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Технические задания</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Заказчики</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Услуги</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Сотрудники</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Проектные команды</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Аккаунты</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QTableWidget" name="TableWidgetDBTableData">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>591</width>
+      <height>231</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PushButtonLogOut">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>LogOut</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="ComboBoxIdMutableNote">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>10</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PushButtonDoExtion">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>10</y>
+      <width>191</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Выполнить действие</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="RadioButtonInsertNote">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>50</y>
+      <width>101</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Новая запись</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="RadioButtonEditNote">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>110</y>
+      <width>111</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Изменить запись</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="RadioButtonDeleteNote">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>180</y>
+      <width>101</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Удалить запись</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="LabelTitleOperations">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>10</y>
+      <width>151</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Выберите тип опирации:</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="TextEditWorkspace">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>280</y>
+      <width>761</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PushButtonInsertSeparator">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>230</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>$_%_$</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
