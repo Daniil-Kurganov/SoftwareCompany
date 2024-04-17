@@ -74,6 +74,7 @@ def WorkWithDBTables() -> None:
         ui.RadioButtonInsertNote.setEnabled(True)
         ui.RadioButtonEditNote.setEnabled(True)
         ui.RadioButtonDeleteNote.setEnabled(True)
+        ui.ComboBoxIdMutableNote.setEnabled(True)
         return None
     def insert_mode_activate() -> None:
         '''Вектор внеснения новой записи в таблицу БД'''
@@ -95,7 +96,7 @@ def WorkWithDBTables() -> None:
             string_sql_request = "SELECT * FROM {} WHERE id = %s;".format(list_dbtables[ui.ComboBoxCurrentDBTable.currentIndex()].string_name)
             cursor.execute(string_sql_request, (str(ui.ComboBoxIdMutableNote.currentText()),))
             tuple_sql_request_result = cursor.fetchone()
-        ui.TextEditWorkspace.setText('$_%_$'.join(tuple_sql_request_result))
+        ui.TextEditWorkspace.setText('$_%_$'.join(str(item_current) for item_current in tuple_sql_request_result))
         return None
     def do_extion_with_dbtable() -> None:
         '''Выполнить выбранную операцию с таблицей БД'''
