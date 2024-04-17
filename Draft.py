@@ -3,9 +3,9 @@ import psycopg2
 try:
     connection = psycopg2.connect(host = 'localhost', user = 'postgres', password = '123456789', dbname = 'SoftwareCompanyDB', port = 5432)
     with connection.cursor() as cursor:
-        string_request = "INSERT INTO {}({}, {}, {}, {}, {}) VALUES (%s, %s, %s, %s, %s);".format('accounts', 'id', 'login', 'passwd',
-                                                                                                  'privilege', 'idowner')
-        cursor.execute(string_request, (7, 'lof', 'f,d', 'Пользователь', 2))
+        string_request = "UPDATE accounts SET ({}, {}, {}, {}, {}) = (%s, %s, %s, %s, %s) WHERE id = %s;".format('id', 'login',
+                                                                                                                   'passwd', 'privilege', 'idowner')
+        cursor.execute(string_request, [7, 'lof', 'f,d', 'Пользователь', 2, 7])
         # # print('{}'.format(cursor.fetchall()))
         # string_sql_reqest = 'SELECT column_name, data_type FROM information_schema.columns WHERE table_name = %s ORDER BY ordinal_position;'
         # cursor.execute(string_sql_reqest, ('accounts',))

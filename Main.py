@@ -10,6 +10,7 @@ class DBTable:
         self.string_name = string_name
         self.list_columns_names, self.list_columns_data_types = [], []
         self.dictionary_query = {'insert': 'INSERT INTO {}('.format(self.string_name),
+                                 'update': 'UPDATE {} SET ('.format(self.string_name),
                                  'delete': 'DELETE FROM {} WHERE id = %s;'.format(self.string_name)}
         connection = get_db_connection()
         with connection.cursor() as cursor:
@@ -17,14 +18,17 @@ class DBTable:
             cursor.execute(string_sql_reqest, (self.string_name,))
             list_authorization_result = cursor.fetchall()
         connection.close()
-        string_insert_query = ''
+        string_query = ''
         for tuple_current_column in list_authorization_result:
             self.list_columns_names.append(str(tuple_current_column[0]))
-            string_insert_query += tuple_current_column[0] + ', '
+            string_query += tuple_current_column[0] + ', '
             if tuple_current_column[1] == 'bigint': self.list_columns_data_types.append(int)
             else: self.list_columns_data_types.append(str)
-        string_insert_query = string_insert_query[:-2] + ') VALUES (' + ('%s, ' * len(self.list_columns_names))
+        string_insert_query = string_query[:-2] + ') VALUES (' + ('%s, ' * len(self.list_columns_names))
+        string_update_query = string_query[:-2] + ') = (' + ('%s, ' * len(self.list_columns_names))
         self.dictionary_query['insert'] += string_insert_query[:-2] + ');'
+        self.dictionary_query['update'] += string_update_query[:-2] + ') WHERE id = %s;'
+        print(self.dictionary_query['update'])
         return None
 def authorization() -> None:
     '''Процесс авторизации'''
@@ -124,6 +128,10 @@ def WorkWithDBTables() -> None:
                 with connection.cursor() as cursor: cursor.execute(dbtable.dictionary_query['insert'], list_current_data)
             elif ui.RadioButtonDeleteNote.isChecked():
                 with connection.cursor() as cursor: cursor.execute(dbtable.dictionary_query['delete'], (int(ui.ComboBoxIdMutableNote.currentText()),))
+            elif ui.RadioButtonEditNote.isChecked():
+                list_current_data.append(list_current_data[0])
+                with connection.cursor() as cursor:
+                    cursor.execute(dbtable.dictionary_query['update'], list_current_data)
             connection.commit()
             connection.close()
             ui.TextEditWorkspace.clear()
