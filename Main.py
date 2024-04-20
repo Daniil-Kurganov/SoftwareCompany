@@ -28,7 +28,6 @@ class DBTable:
         string_update_query = string_query[:-2] + ') = (' + ('%s, ' * len(self.list_columns_names))
         self.dictionary_query['insert'] += string_insert_query[:-2] + ');'
         self.dictionary_query['update'] += string_update_query[:-2] + ') WHERE id = %s;'
-        print(self.dictionary_query['update'])
         return None
 def authorization() -> None:
     '''Процесс авторизации'''
